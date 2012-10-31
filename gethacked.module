@@ -1,0 +1,93 @@
+<?php
+
+
+function gethacked_menu() {
+  $items['gethacked/user_print/%'] = array(
+    'page callback' => 'gethacked_user_print',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['gethacked/user_form/%'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('gethacked_user_form', 2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['gethacked/cache/get/%'] = array(
+    'page callback' => 'gethacked_get_cache',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['gethacked/cache/set/%'] = array(
+    'page callback' => 'gethacked_set_cache',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['gethacked/autocomplete/%'] = array(
+    'page callback' => 'gethacked_autocomplete',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function gethacked_user_form($form_state, $arg) {
+  $user = user_load($arg['build_info']['args'][0]);
+
+  //ignore this
+  $user->bio = '<SCRIPT>alert("popup");</SCRIPT>';
+
+  $form['bio'] = array(
+    '#type' => 'item',
+    '#title' => t('Bio'),
+    '#markup' => check_plain($user->bio),
+  );
+
+  return $form;
+}
+
+function gethacked_user_print($user_id) {
+  $user = user_load($user_id);
+
+  //ignore this
+  $user->bio = '<SCRIPT>alert("popup");</SCRIPT>';
+
+  $html = t('Bio');
+  $html.= check_plain($user->bio);
+
+  return $html;
+}
+
+function gethacked_get_cache($cache_id) {
+  $cache_table = isset($_POST['cache_table']) ? $_POST['cache_table'] : 'cache_block';
+  print_r(cache_get($cache_id, $cache_table));
+}
+
+function gethacked_set_cache($cache_id) {
+  $cache_table = isset($_POST['cache_table']) ? $_POST['cache_table'] : 'cache';
+  $expire_type = isset($_POST['expiry']) ? $_POST['expiry'] : 'CACHE_PERMANENT';
+
+  cache_set($cache_id, $_POST['cache_data'], $cache_table, $expire_type);
+  print $_POST['cache_data'];
+}
+
+function gethacked_autocomplete($string) {
+    $matches = array();
+    $sql = t("SELECT tid, name FROM {taxonomy_term_data} td WHERE td.name LIKE '$string'");
+    $res = db_query($sql);
+
+    foreach($res as $match) {w
+      print drupal_json_output($match);
+    }
+}
+

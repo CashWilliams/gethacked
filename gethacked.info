@@ -1,0 +1,5 @@
+name = "GetHacked"
+description = Examples of what NOT to do!
+core = 7.x
+
+files[] = gethacked.module
