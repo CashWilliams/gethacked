@@ -50,7 +50,7 @@ function gethacked_user_form($form_state, $arg) {
   $form['bio'] = array(
     '#type' => 'item',
     '#title' => t('Bio'),
-    '#markup' => check_plain($user->bio),
+    '#markup' => $user->bio,
   );
 
   return $form;
@@ -63,7 +63,7 @@ function gethacked_user_print($user_id) {
   $user->bio = '<SCRIPT>alert("popup");</SCRIPT>';
 
   $html = t('Bio');
-  $html.= check_plain($user->bio);
+  $html.= $user->bio;
 
   return $html;
 }
@@ -86,8 +86,7 @@ function gethacked_autocomplete($string) {
     $sql = t("SELECT tid, name FROM {taxonomy_term_data} td WHERE td.name LIKE '$string'");
     $res = db_query($sql);
 
-    foreach($res as $match) {w
+    foreach($res as $match) {
       print drupal_json_output($match);
     }
 }
-
