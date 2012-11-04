@@ -1,18 +1,36 @@
 <?php
 
+/**
+ * @file gethacked.module
+ *
+ * This is a example module used for security training. It should never
+ * be enabled on a real site.
+ *
+ * +++++ DO NOT INSTALL THIS ON A PUBLICLY ACCESSIBLE SITE +++++
+ *
+ */
 
 function gethacked_menu() {
+  // Ajax callback with access callback set to TRUE
+  $items['gethacked/autocomplete/%'] = array(
+    'page callback' => 'gethacked_autocomplete',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    //'access callback' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
   $items['gethacked/user_print/%'] = array(
     'page callback' => 'gethacked_user_print',
     'page arguments' => array(2),
-    'access callback' => TRUE,
+    'access callback' => array('access content'),
     'type' => MENU_CALLBACK,
   );
 
   $items['gethacked/user_form/%'] = array(
     'page callback' => 'drupal_get_form',
     'page arguments' => array('gethacked_user_form', 2),
-    'access callback' => TRUE,
+    'access callback' => array('access content'),
     'type' => MENU_CALLBACK,
   );
 
@@ -31,12 +49,7 @@ function gethacked_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['gethacked/autocomplete/%'] = array(
-    'page callback' => 'gethacked_autocomplete',
-    'page arguments' => array(2),
-    'access callback' => TRUE,
-    'type' => MENU_CALLBACK,
-  );
+
 
   return $items;
 }
